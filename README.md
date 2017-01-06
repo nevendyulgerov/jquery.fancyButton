@@ -80,7 +80,7 @@ Here's an example of initializing 2 fancy buttons on the same page:
 <script type="text/javascript">
 	jQuery(document).ready(function($) {
 	
-		// cache notifier
+		// cache fancyButton
 		var fancyButton = $('body').fancyButton();
 
 		// create button
