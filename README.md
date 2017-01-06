@@ -1,5 +1,5 @@
 
-jQuery Fancy Button (fancyButton) is a light-weight button visualization plugin. The plugin exposes a simple API for displaying buttons with nice smooth animations. 
+jQuery Fancy Button (fancyButton) is a light-weight, memory-efficient button visualization plugin. The plugin exposes a simple API for displaying buttons with nice smooth animations. 
 
 fancyButton has been designed with performance in mind. The non-minified version of the plugin is 5 KB, while the minified version is just 2KB.
 
@@ -7,17 +7,14 @@ fancyButton has been designed with performance in mind. The non-minified version
 
 jQuery (1.6 or higher)
 
-VelocityJS (1.4 or higher)
-
 # Getting Started
 
 You can clone or download fancyButton from this repository. The download includes a non-minified and minified version of the plugin.
 
-fancyButton requires jQuery and VelocityJS to work. So, make sure that you have both libraries included on your page before loading the plugin:
+fancyButton requires jQuery to work. So, make sure that you have this libraries included on your page before loading the plugin:
 
 ```javascript
 <script type="text/javascript" src="path-to-jquery/jquery.js"></script>
-<script type="text/javascript" src="path-to-jquery/velocity.js"></script>
 ```
 
 To include the minified version of the plugin on your page, simply add:
@@ -60,14 +57,11 @@ You can use fancyButton like this:
 <script type="text/javascript">
 	jQuery(document).ready(function($) {
 	
-		// cache fancyButton
+		// cache notifier
 		var fancyButton = $('body').fancyButton();
-		
-		// create a fancyButton instance
-		var btn1 = fancyButton.createInstance();
-		
-		// initialize your instance
-		btn1.init({
+
+		// create button
+		fancyButton.createButton({
 			selector: '.button-1',
 			slidesCount: 4,
 			hoverColor: '#2c3e50',
@@ -88,15 +82,9 @@ Here's an example of initializing 2 fancy buttons on the same page:
 	
 		// cache notifier
 		var fancyButton = $('body').fancyButton();
-		
-		// create instance for button 1
-		var btn1 = fancyButton.createInstance();
-		
-		// create instance for button 2
-		var btn2 = fancyButton.createInstance();
 
-		// initialize button 1
-		btn1.init({
+		// create button
+		fancyButton.createButton({
 			selector: '.button-1',
 			slidesCount: 4,
 			hoverColor: '#2c3e50',
@@ -104,13 +92,13 @@ Here's an example of initializing 2 fancy buttons on the same page:
 			timeOffset: 100
 		});
 
-		// initialize button 2
-		btn2.init({
+		// create button
+		fancyButton.createButton({
 			selector: '.button-2',
-			slidesCount: 12,
-			hoverColor: '#c0392b',
-			duration: 200,
-			timeOffset: 50
+			slidesCount: 10,
+			hoverColor: '#9b59b6',
+			duration: 300,
+			timeOffset: 100
 		});
 	});
 </script>

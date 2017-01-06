@@ -1,110 +1,167 @@
-var fancyButton = (function($) {
-    var createInstance = function() {
-        var selector    = null;
-        var $selector   = null;
-        var $style      = null;
-        var hoverColor  = null;
-        var slidesCount = 0;
-        var duration    = 0;
-        var timeOffset  = 0;
+;(function($) {
 
-        var init = function(options) {
-            var isValid =
-                typeof options              === 'object' &&
-                typeof options.selector     === 'string' &&
-                typeof options.slidesCount  === 'number' &&
-                typeof options.hoverColor   === 'string';
+    $.fn.fancyButton = function() {
 
-            if ( ! isValid ) {
-                console.warn('Invalid initialization for fancyButton! Make sure to define a valid options object on initialization. Options object must include selector, slidesCount and hoverColor.');
-                return false;
-            }
+        var base = {
+            selector: null,
+            $selector: null,
+            style: null,
+            hoverColor: null,
+            slidesCount: 0,
+            duration: 0,
+            timeOffset: 0,
+            slideSelector: 'slide',
 
-            // set global variables
-            selector    = options.selector;
-            $selector   = $(selector);
-            $style      = $selector[0].style;
-            slidesCount = options.slidesCount;
-            hoverColor  = options.hoverColor;
-            duration    = typeof options.duration === 'number' ? options.duration : 0;
-            timeOffset  = typeof options.timeOffset === 'number' ? options.timeOffset : 100;
+            init: function(args) {
 
-            // ensure selector has position 'relative'
-            $style.position = 'relative';
+                var isValid =
+                    typeof args              === 'object' &&
+                    typeof args.selector     === 'string' &&
+                    typeof args.slidesCount  === 'number' &&
+                    typeof args.hoverColor   === 'string';
 
-            // ensure selector has overflow 'hidden'
-            $style.overflow = 'hidden';
+                // validate
+                if ( ! isValid ) {
+                    console.warn('Invalid initialization for fancyButton! Make sure to define a valid options object on initialization. Options object must include selector, slidesCount and hoverColor.');
+                    return false;
+                }
 
-            var width       = $selector.width();
-            var slideWidth  = Math.floor(width / slidesCount);
+                var selector     = args.selector;
+                var $selector    = $(selector);
+                var style        = $selector[0].style;
+                var slidesCount  = args.slidesCount;
 
-            var html        = '';
-            var dataContent = $selector.data('content');
-            var content     = typeof dataContent !== 'undefined' ? '<span style="display:block; position:absolute; z-index: 100;">' + $selector.data('content') + '</span>' : '';
+                // set global variables
+                this.selector    = selector;
+                this.$selector   = $selector;
+                this.style       = style;
+                this.slidesCount = slidesCount;
+                this.hoverColor  = args.hoverColor;
+                this.duration    = typeof args.duration === 'number' ? args.duration : 0;
+                this.timeOffset  = typeof args.timeOffset === 'number' ? args.timeOffset : 100;
 
-            for ( var i = 0, j = slidesCount; i < j; i++ ) {
-                var style = 'position: absolute;width:' + slideWidth + 'px;top: 0px; left:' + (slideWidth * i) + 'px; height: 100%;background-color: ' + hoverColor + ';';
-                html += '<div class="slide" style="' + style + '"></div>';
-            }
+                // ensure selector has position 'relative'
+                style.position = 'relative';
 
-            $selector.append(html);
-            $selector.append(content);
-            initEventHandler();
-        };
+                // ensure selector has overflow 'hidden'
+                style.overflow = 'hidden';
 
-        var initEventHandler = function() {
-            $selector.hover(function() {
-                moveSlides('up', timeOffset);
-            }, function() {
-                moveSlides('down', timeOffset);
-            });
-        };
+                // insert slides
+                this.insertSlides();
 
-        var moveSlideItem = function(index, direction, delay) {
-            var $slides      = $selector.find('.slide');
-            var $slide       = $slides.eq(index);
-            var offset       = 20;
-            var actualOffset = ($selector.height() + offset) * 3;
-            var top          = direction === 'up' ? '-' + actualOffset + 'px' : '0px';
+                // init event handler
+                this.initEventHandler();
+            },
+            getSlideWidth: function() {
+                return Math.floor(this.$selector.width() / this.slidesCount);
+            },
+            insertSlides: function() {
+                var $selector      = this.$selector;
+                var slidesCount    = this.slidesCount;
+                var slideWidth     = this.getSlideWidth();
+                var hoverColor     = this.hoverColor;
+                var slideSelector  = this.slideSelector;
 
-            setTimeout(function() {
-                $slide.velocity({
-                    top: top
-                }, {
-                    duration: duration,
-                    complete: function() {}
+                var html        = '';
+                var dataContent = $selector.data('content');
+                var slideStyle  = 'display:block; position:absolute; z-index:100;';
+                var content     = typeof dataContent !== 'undefined' ? '<span style="' + slideStyle + '">' + $selector.data('content') + '</span>' : '';
+
+                for ( var i = 0, j = slidesCount; i < j; i++ ) {
+                    var styleAttrs = 'position: absolute;width:' + slideWidth + 'px;top: 0px; left:' + (slideWidth * i) + 'px; height: 100%;background-color: ' + hoverColor + ';';
+                    html += '<div class="' + slideSelector + '" style="' + styleAttrs + '"></div>';
+                }
+
+                $selector.append(html);
+                $selector.append(content);
+            },
+            initEventHandler: function() {
+                var that       = this;
+                var timeOffset = that.timeOffset;
+
+                that.$selector.hover(function() {
+                    that.moveSlides({
+                        direction: 'up',
+                        timeOffset: timeOffset
+                    });
+                }, function() {
+                    that.moveSlides({
+                        direction: 'down',
+                        timeOffset: timeOffset
+                    });
                 });
-            }, delay);
+            },
+            moveSlides: function(args) {
+                var that          = this;
+                var direction     = args.direction;
+                var timeOffset    = args.timeOffset;
+                var $selector     = this.$selector;
+                var slideSelector = '.' + this.slideSelector;
+                var $slides       = $selector.find(slideSelector);
+                var index         = 0;
+                var delay         = 0;
+                var i, j;
+
+                if ( direction === 'up' ) {
+                    for ( i = 0, j = $slides.length; i < j; i++ ) {
+                        index = i + 1;
+                        delay = timeOffset * index;
+                        that.moveSlideItem({
+                            index: i,
+                            direction: direction,
+                            delay: delay
+                        });
+                    }
+                } else {
+                    index = 1;
+                    for ( i = $slides.length - 1, j = 0; i >= j; i-- ) {
+                        delay = timeOffset * index;
+                        that.moveSlideItem({
+                            index: i,
+                            direction: direction,
+                            delay: delay
+                        });
+                        index++;
+                    }
+                }
+            },
+            moveSlideItem: function(args) {
+                var $selector     = this.$selector;
+                var duration      = this.duration;
+                var index         = args.index;
+                var direction     = args.direction;
+                var delay         = args.delay;
+                var slideSelector = '.' + this.slideSelector;
+
+                var $slides      = $selector.find(slideSelector);
+                var $slide       = $slides.eq(index);
+                var offset       = 20;
+                var actualOffset = ($selector.height() + offset) * 3;
+                var top          = direction === 'up' ? '-' + actualOffset + 'px' : '0px';
+
+                setTimeout(function() {
+                    $slide.velocity({
+                        top: top
+                    }, {
+                        duration: duration,
+                        complete: function() {}
+                    });
+                }, delay);
+            },
+            getCopy: function() {
+                return $.extend({}, this);
+            }
         };
 
-        var moveSlides = function(direction, timeOffset) {
-            var $slides = $selector.find('.slide');
-            var index   = 0;
-            var delay   = 0;
-            var i, j;
+        var createButton = function(args) {
+            var instance = base.getCopy();
 
-            if ( direction === 'up' ) {
-                for ( i = 0, j = $slides.length; i < j; i++ ) {
-                    index = i + 1;
-                    delay = timeOffset * index;
-                    moveSlideItem(i, direction, delay);
-                }
-            } else {
-                index = 1;
-                for ( i = $slides.length - 1, j = 0; i >= j; i-- ) {
-                    delay = timeOffset * index;
-                    moveSlideItem(i, direction, delay);
-                    index++;
-                }
-            }
+            instance.init(args);
         };
 
         return {
-            init: init
-        }
+            createButton: createButton
+        };
     };
 
-    return {
-        createInstance: createInstance
-    };
 })( jQuery );
