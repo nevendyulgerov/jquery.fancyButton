@@ -6,6 +6,7 @@ fancyButton has been designed with performance in mind. The non-minified version
 # Requirements
 
 jQuery (1.6 or higher)
+
 VelocityJS (1.4 or higher)
 
 # Getting Started
