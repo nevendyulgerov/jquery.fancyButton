@@ -53,7 +53,9 @@ Alternatively, you can include the plugin in an async manner, like this:
 
 You can use fancyButton like this:
 
-```javascript
+```html
+<a href="#" class="button-1" data-content="Submit"></a>
+
 <script type="text/javascript">
 	jQuery(document).ready(function($) {
 	
@@ -72,11 +74,16 @@ You can use fancyButton like this:
 </script>
 ```
 
-The above code will initialize a fancyButton with selector '.button-1'. The button will have 4 slides, which will move with a speed of 500 milliseconds. The slides will move with a time delay of 100 milliseconds.
+The above code will initialize a fancyButton with selector '.button-1'. The button will have 4 slides, which will move with a speed of 500 milliseconds. The slides will move with a time delay of 100 milliseconds. 
+Notice the way you pass content to the button - a data attribute 'data-content' is used.
 
 Here's an example of initializing 2 fancy buttons on the same page:
 
-```javascript
+```html
+<a href="#" class="button-1" data-content="Submit"></a>
+
+<a href="#" class="button-2" data-content="Send"></a>
+
 <script type="text/javascript">
 	jQuery(document).ready(function($) {
 	
