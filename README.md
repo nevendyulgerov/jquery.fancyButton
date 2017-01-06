@@ -1,7 +1,7 @@
 
 jQuery Fancy Button (fancyButton) is a light-weight button visualization plugin. The plugin exposes a simple API for displaying buttons with nice smooth animations. 
 
-fancyButton has been designed with performance in mind. The non-minified version of the plugin is 5 KB.
+fancyButton has been designed with performance in mind. The non-minified version of the plugin is 5 KB, while the minified version is just 2KB.
 
 # Requirements
 
