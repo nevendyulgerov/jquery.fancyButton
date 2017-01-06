@@ -57,7 +57,7 @@ You can use fancyButton like this:
 <script type="text/javascript">
 	jQuery(document).ready(function($) {
 	
-		// cache notifier
+		// cache fancyButton
 		var fancyButton = $('body').fancyButton();
 
 		// create button
